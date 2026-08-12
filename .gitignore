@@ -1,0 +1,54 @@
+# SEER data and exports
+01_sessions/
+02_raw_exports/
+*.ses
+*.dic
+*.dct
+*.txt
+*.csv
+*.tsv
+*.xlsx
+*.xls
+
+# Generated outputs
+04_results/
+05_logs/
+figures/
+tables/
+source_data/
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.svg
+*.pdf
+
+# Manuscripts and office files
+06_manuscript/
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# Individual-level or case-listing files
+*case_listing*
+*patient*
+*individual*
+
+# Credentials and local configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+
+# R and system files
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
+Thumbs.db
