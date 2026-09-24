@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Please cite this version of the analysis code. A DOI has not yet been assigned."
 type: software
 title: "SEER childhood and AYA subsequent nervous system tumor analysis"
-version: "2026.09.24"
+version: "2026.09.24.1"
 date-released: "2026-09-24"
 authors:
   - family-names: Wu
