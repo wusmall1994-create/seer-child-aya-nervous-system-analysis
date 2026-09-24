@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Please cite this version of the analysis code. A DOI has not yet been assigned."
+type: software
+title: "SEER childhood and AYA subsequent nervous system tumor analysis"
+version: "2026.09.24"
+date-released: "2026-09-24"
+authors:
+  - family-names: Wu
+    given-names: Xiaoxin
+repository-code: "https://github.com/wusmall1994-create/seer-child-aya-nervous-system-analysis"
+abstract: "R analysis code for SEER MP-SIR analyses and supplementary competing-risk cumulative incidence estimates after first cancer before age 40. Restricted SEER data are not included."

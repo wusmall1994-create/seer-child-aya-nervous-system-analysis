@@ -23,13 +23,13 @@ data through this repository.
 ## Requirements
 
 - R 4.6.1 or a compatible recent R release
-- R packages: `ggplot2`, `patchwork`, and `svglite`
+- R packages: `ggplot2`, `patchwork`, `svglite`, `data.table`, and `survival`
 - SEER*Stat 9.0.43 for producing the required input exports
 
 Install the R dependencies with:
 
 ```r
-install.packages(c("ggplot2", "patchwork", "svglite"))
+install.packages(c("ggplot2", "patchwork", "svglite", "data.table", "survival"))
 ```
 
 ## Local directory structure
@@ -64,6 +64,40 @@ local value.
 
 The script creates aggregate tables, figure files, source-data tables, and QA
 logs under `04_results/` and `05_logs/`.
+
+## September 2026 revision analyses
+
+Run the original pipeline first to produce the aggregate input tables, followed by:
+
+```sh
+Rscript 03_analysis/revision_analysis.R
+Rscript 03_analysis/cif_competing_risk.R
+```
+
+Both scripts support `SEER_PROJECT_DIR`. Optional output overrides are
+`SEER_REVISION_OUTPUT_DIR` and `SEER_CIF_OUTPUT_DIR`.
+
+`revision_analysis.R` implements the shared 15-category first-cancer model,
+1,999-replicate parametric bootstrap (seed 20260921), 200 rounding scenarios
+(seed 20260922), and the shared-category forest figure. It reads the original
+aggregate tables and the local 05 first-cancer export.
+
+`cif_competing_risk.R` reads the local full-cohort export
+`15_full_cohort_index_competing_risk.txt`. Required columns include Patient ID,
+Event Number, Reason for Exit, age recode, Survival months, the event-site
+variable, Months Since Index (Calculated), and Person Time Years (Calculated).
+The session uses a 2-month exclusion and exits at the next malignant tumor.
+The analysis uses Aalen–Johansen estimates with death and other first subsequent
+malignancies as competing events; study end and loss to follow-up are censoring.
+There are 275,732 included persons and 345 eligible target events: one at exactly
+2 months and 344 later. Eligible zero-time exits are retained with a numerical
+epsilon of 1e-8 years. These counts do not establish the absence of ineligible
+tumors during the initial exclusion window. A separate direct recursion checks
+the cumulative-incidence point estimates against `survival::survfit`.
+
+Only aggregate results are written by the release scripts. The local author
+version's patient-level export has been removed from the release version.
+The published scripts retain the same statistical calculations.
 
 ## Privacy safeguards
 
