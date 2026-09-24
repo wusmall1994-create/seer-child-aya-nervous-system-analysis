@@ -95,6 +95,12 @@ epsilon of 1e-8 years. These counts do not establish the absence of ineligible
 tumors during the initial exclusion window. A separate direct recursion checks
 the cumulative-incidence point estimates against `survival::survfit`.
 
+If the otherwise-matched 0-month case listing
+`16_full_cohort_all_malignancies_0m.txt` is present, the script also verifies
+the landmark boundary. In that export, 366 first subsequent target tumors were
+identified: 21 before 2 months, one at exactly 2 months, and 344 later. The
+345 tumors at or after the landmark match the primary MP-SIR event set exactly.
+
 Only aggregate results are written by the release scripts. The local author
 version's patient-level export has been removed from the release version.
 The published scripts retain the same statistical calculations.

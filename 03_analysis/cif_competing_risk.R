@@ -12,6 +12,7 @@ script_path <- normalizePath(sub("^--file=", "", script_arg[1]), winslash = "/")
 root <- normalizePath(Sys.getenv("SEER_PROJECT_DIR", unset = dirname(dirname(script_path))), winslash = "/", mustWork = TRUE)
 
 raw_file <- file.path(root, "02_raw_exports", "15_full_cohort_index_competing_risk.txt")
+boundary_file <- file.path(root, "02_raw_exports", "16_full_cohort_all_malignancies_0m.txt")
 out_dir <- Sys.getenv("SEER_CIF_OUTPUT_DIR", unset = file.path(root, "04_results", "competing_risk_20260924"))
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -35,7 +36,29 @@ eligible_target <- d[`Event Number` == "1"]
 stopifnot(nrow(eligible_target) == 345L,
           all(as.numeric(eligible_target$`Months Since Index (Calculated)`) >= 2),
           sum(as.numeric(eligible_target$`Months Since Index (Calculated)`) == 2) == 1L)
-# This assertion concerns eligible MP-SIR events, not all tumors in the exclusion window.
+
+# When available, a separate otherwise-matched 0-month case listing verifies
+# the 2-month eligibility boundary independently of the primary export.
+boundary_qa <- NULL
+if (file.exists(boundary_file)) {
+  b <- fread(boundary_file, sep = "\t", na.strings = "NA", quote = "\"")
+  b_target <- b[`Event Number` == "1" &
+                  `Site recode ICD-O-3/WHO 2008 (for SIRs) (Event Variable)` %chin%
+                    c("Brain", "Cranial Nerves Other Nervous System")]
+  b_target[, latency_months := as.numeric(`Months Since Index (Calculated)`)]
+  stopifnot(nrow(b_target) == 366L,
+            sum(b_target$latency_months < 2) == 21L,
+            sum(b_target$latency_months == 2) == 1L,
+            sum(b_target$latency_months > 2) == 344L,
+            setequal(eligible_target$`Patient ID`,
+                     b_target[latency_months >= 2, `Patient ID`]))
+  boundary_qa <- list(
+    zero_month_people = uniqueN(b$`Patient ID`),
+    target_before_landmark = sum(b_target$latency_months < 2),
+    target_at_landmark = sum(b_target$latency_months == 2),
+    target_after_landmark = sum(b_target$latency_months > 2)
+  )
+}
 stopifnot(nrow(ex) == 276844L, uniqueN(ex$patient_id) == 276844L, !anyNA(ex$time_years))
 
 cohort <- merge(idx, ex, by = "patient_id", all = TRUE)
@@ -84,7 +107,8 @@ qa <- list(
   status_counts = table(analysis$status_chr),
   age_counts = table(analysis$age_group),
   target_counts = table(analysis$age_group[analysis$status_chr == "target_cns"]),
-  zero_time_retained = sum(analysis$time_years == 0)
+  zero_time_retained = sum(analysis$time_years == 0),
+  boundary_validation = boundary_qa
 )
 capture.output(str(qa), file = file.path(out_dir, "cif_qa.txt"))
 
