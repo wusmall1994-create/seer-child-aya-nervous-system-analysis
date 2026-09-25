@@ -5,6 +5,9 @@ multiple-primary standardized incidence ratio (MP-SIR) study of malignant brain
 and other nervous system tumors occurring as the first subsequent malignancy
 after cancer diagnosed before age 40 years.
 
+Archived release: [v2026.09.24.1](https://doi.org/10.5281/zenodo.22942018)
+(DOI: 10.5281/zenodo.22942018).
+
 ## Repository scope
 
 Only analysis code and documentation are included. This repository does **not**
@@ -124,5 +127,5 @@ configure equivalent MP-SIR sessions under their own SEER data agreement.
 
 ## License
 
-No license has been assigned. All rights are reserved unless the repository
-owner adds a license.
+The Zenodo record for archived version v2026.09.24.1 specifies CC BY 4.0. The
+GitHub repository does not currently include a separate software licence file.
