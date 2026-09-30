@@ -54,7 +54,7 @@ write(h,'shared_figure_data.csv')
 # Paired quantitative forest panels, exact Poisson intervals, 183 x 160 mm, 600 dpi TIFF.
 h$Shared <- factor(h$Shared,levels=rev(sort(unique(h$Shared))))
 p <- ggplot(h,aes(y=Shared,x=SIR))+geom_vline(xintercept=1,linetype=2,colour='grey55')+
- geom_segment(aes(x=pmax(.02,Lower),xend=Upper,yend=Shared),linewidth=.4,colour='#346A85')+
+ geom_segment(data=h[h$Observed>0,],aes(x=pmax(.02,Lower),xend=Upper,yend=Shared),linewidth=.4,colour='#346A85')+
  geom_point(data=h[h$Observed>0,],size=1.7,colour='#346A85')+
  geom_text(aes(x=480,label=paste0('n=',Observed)),size=2.5,hjust=1)+
  scale_x_log10(limits=c(.02,550),breaks=c(.1,1,10,100))+facet_grid(.~Age_Band)+
